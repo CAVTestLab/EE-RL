@@ -1,0 +1,7 @@
+output/
+output_front_rgb/
+tensorboard/
+__pycache__/
+*.pyc
+vlm_lora_data/key_road_data/
+vlm_lora_data/normal_road_data/
