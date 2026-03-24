@@ -480,11 +480,6 @@ We further thank our research collaborators:
 And we sincerely appreciate the broader open-source community for making this work possible.
 
 ---
-## 📄 License
-
-The source code in this repository is released under the **MIT License**. See the [LICENSE](./LICENSE) file for the complete license text.
-
-This project is mainly intended for **academic research, educational use, and open-source development**. For any use involving third-party resources, such as external datasets, pretrained models, or dependent toolkits, please follow the license terms and usage policies specified by their respective providers.
 
 ## 📝 Citation
 
