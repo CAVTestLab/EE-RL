@@ -129,11 +129,19 @@ class QwenVLMModel(VLMModelInterface):
                 'speed': speed,
                 'throttle': throttle,
                 'steer': steer,
-                'maneuver': current_maneuver
+                'maneuver': current_maneuver,
+                'traffic_light_state': self._normalize_traffic_light_state(tl_state)
             }
             
             # Build a deterministic key for optional exact-cache storage.
-            cache_key = self._generate_cache_key(image, speed, throttle, steer, current_maneuver)
+            cache_key = self._generate_cache_key(
+                image,
+                speed,
+                throttle,
+                steer,
+                current_maneuver,
+                current_state['traffic_light_state']
+            )
 
             """
             ===== Similar-State Cache Lookup =====
@@ -453,29 +461,39 @@ class QwenVLMModel(VLMModelInterface):
     
     def _compute_state_similarity(self, state1: Dict[str, Any], state2: Dict[str, Any]) -> float:
         """Compute driving-state similarity in [0, 1] for cache retrieval."""
-        if state1['maneuver'] != state2['maneuver']:
-            return 0.0
-        
+        maneuver_sim = 1.0 if state1['maneuver'] == state2['maneuver'] else 0.0
+
         speed_diff = abs(state1['speed'] - state2['speed'])
         throttle_diff = abs(state1['throttle'] - state2['throttle'])
         steer_diff = abs(state1['steer'] - state2['steer'])
-        
+
         speed_sim = max(0, 1 - speed_diff / 35.0)
-        
+
         throttle1 = state1['throttle']
         throttle2 = state2['throttle']
-        
+
         if (throttle1 >= 0) != (throttle2 >= 0):
             throttle_sim = max(0, 1 - throttle_diff / 2.0)
             throttle_sim *= 0.5
         else:
             throttle_sim = max(0, 1 - throttle_diff / 2.0)
-        
+
         steer_diff = abs(state1['steer'] - state2['steer'])
         steer_sim = max(0, 1 - steer_diff / 2.0)
-        
-        overall_similarity = (speed_sim * 0.5 + steer_sim * 0.3 + throttle_sim * 0.2)
-        
+
+        tl_state_1 = self._normalize_traffic_light_state(state1.get('traffic_light_state', 'Unknown'))
+        tl_state_2 = self._normalize_traffic_light_state(state2.get('traffic_light_state', 'Unknown'))
+        tl_sim = 1.0 if tl_state_1 == tl_state_2 else 0.0
+
+        # Paper-aligned weights: [speed, throttle, maneuver, steer, traffic_light]
+        overall_similarity = (
+            speed_sim * 0.3 +
+            throttle_sim * 0.2 +
+            maneuver_sim * 0.2 +
+            steer_sim * 0.1 +
+            tl_sim * 0.2
+        )
+
         return overall_similarity
     
     def _find_similar_cache(self, image: Any, current_state: Dict[str, Any]) -> Optional[Tuple[float, float]]:
@@ -509,20 +527,42 @@ class QwenVLMModel(VLMModelInterface):
         else:
             return None
 
-    def _generate_cache_key(self, image: Any, speed: float, 
-                           throttle: float, steer: float, current_maneuver: str) -> str:
+    def _generate_cache_key(self, image: Any, speed: float,
+                           throttle: float, steer: float, current_maneuver: str,
+                           traffic_light_state: str = "Unknown") -> str:
         """Generate a stable cache key from image hash and discretized controls."""
         try:
             speed_bucket = round(speed * 20) / 20
             throttle_bucket = round(throttle * 50) / 50
             steer_bucket = round(steer * 50) / 50
             maneuver_bucket = current_maneuver
+            tl_bucket = self._normalize_traffic_light_state(traffic_light_state)
             
             image_hash = self._compute_image_hash(image)
             
-            return f"{image_hash}_{speed_bucket}_{throttle_bucket}_{steer_bucket}_{maneuver_bucket}"
+            return f"{image_hash}_{speed_bucket}_{throttle_bucket}_{steer_bucket}_{maneuver_bucket}_{tl_bucket}"
         except:
-            return f"{time.time()}_{speed}_{throttle}_{steer}_{current_maneuver}"
+            return f"{time.time()}_{speed}_{throttle}_{steer}_{current_maneuver}_{traffic_light_state}"
+
+    def _normalize_traffic_light_state(self, raw_state: Any) -> str:
+        """Normalize traffic-light state into one of: Red, Yellow, Green, Unknown."""
+        if raw_state is None:
+            return "Unknown"
+
+        state_str = str(raw_state).strip()
+        if not state_str:
+            return "Unknown"
+
+        # Handle forms like "TrafficLightState.Red", "Red", "RED", etc.
+        upper_state = state_str.upper()
+        if upper_state.endswith(".RED") or upper_state == "RED":
+            return "Red"
+        if upper_state.endswith(".YELLOW") or upper_state == "YELLOW":
+            return "Yellow"
+        if upper_state.endswith(".GREEN") or upper_state == "GREEN":
+            return "Green"
+
+        return "Unknown"
     
     def get_model_info(self) -> Dict[str, Any]:
         base_info = super().get_model_info()
