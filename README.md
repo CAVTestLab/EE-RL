@@ -17,10 +17,10 @@
 </p>
 
 <p>
-  <b>Xiaolong Li</b><sup>1†</sup>,
-  <b>Lan Yang</b><sup>1†</sup>,
+  <b>Xiaolong Li</b><sup>1*</sup>,
+  <b>Lan Yang</b><sup>1*</sup>,
   <b>Ruyang Li</b><sup>2</sup>,
-  <b>Shan Fang</b><sup>1*</sup>,
+  <b>Shan Fang</b><sup>1†</sup>,
   <b>Yang Liu</b><sup>3</sup>,
   <b>Xiangmo Zhao</b><sup>1</sup>
 </p>
@@ -32,8 +32,8 @@
 </p>
 
 <p>
-  <sup>†</sup>Co-first authors &nbsp;&nbsp;
-  <sup>*</sup>Corresponding author
+  <sup>*</sup>Co-first authors &nbsp;&nbsp;
+  <sup>†</sup>Corresponding author
 </p>
 
 </div>
@@ -57,7 +57,7 @@
 **EE-RL** is an end-to-end autonomous driving framework designed to address **sparse-critical scenarios**. It combines an RL-based **Explorer** with a LoRA fine-tuned VLM-based **Expert**, and employs a **dual replay buffer** to improve driving policy learning, semantic reasoning, and robustness in complex traffic environments. To improve the reuse of the expert experiences, **StateHash** is designed to measure image and vehicle-state similarity and skip unnecessary VLM inference, thereby generating more expert experiences per unit time.
 
 <p align="center">
-  <img src="docs/figure1.png" width="80%" alt="EE-RL framework overview" />
+  <img src="docs/figure1.png" width="50%" alt="EE-RL framework overview" />
 </p>
 
 ---
