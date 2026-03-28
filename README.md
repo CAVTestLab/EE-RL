@@ -45,7 +45,7 @@
 <h3 align="center">A short introduction video for EE-RL is available here.</h3>
 
 <p align="center">
-  <a href="https://www.youtube.com/watch?v=qS7MpOz7bec">
+  <a href="https://youtu.be/Y46bWKhXnaw">
     <img src="https://img.shields.io/badge/Watch%20on-YouTube-FF0000?style=for-the-badge&logo=youtube&logoColor=white" alt="Watch on YouTube">
   </a>
   <!-- &nbsp;
