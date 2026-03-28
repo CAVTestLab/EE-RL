@@ -27,7 +27,7 @@
 
 <p>
   <sup>1</sup>Chang'an University &nbsp;&nbsp;
-  <sup>2</sup>Inspur (Beijing) &nbsp;&nbsp;
+  <sup>2</sup>IEIT SYSTEMS (Beijing) Co., Ltd. &nbsp;&nbsp;
   <sup>3</sup>Tsinghua University
 </p>
 
