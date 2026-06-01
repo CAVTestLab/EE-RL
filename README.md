@@ -486,11 +486,13 @@ And we sincerely appreciate the broader open-source community for making this wo
 If you find this repository helpful, please consider leaving a ⭐ on this repository and citing our work:
 
 ```bibtex
-@inproceedings{li2026eerl,
-  title={EE-RL: Vision Language Guided Reinforcement Learning with Explorer and Expert model for End-to-End Autonomous Driving},
-  author={Li, Xiaolong and Yang, Lan and Li, Ruyang and Fang, Shan and Liu, Yang and Zhao, Xiangmo},
-  booktitle={Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)},
-  year={2026}
+@InProceedings{Li_2026_CVPR,
+    author    = {Li, Xiaolong and Yang, Lan and Li, Ruyang and Fang, Shan and Liu, Yang and Zhao, Xiangmo},
+    title     = {EE-RL: Vision Language Guided Reinforcement Learning with Explorer and Expert model for End-to-End Autonomous Driving},
+    booktitle = {Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)},
+    month     = {June},
+    year      = {2026},
+    pages     = {32082-32092}
 }
 ```
 
